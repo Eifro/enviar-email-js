@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const inputEmail = document.querySelector('#email')
     const inputAsunto = document.querySelector('#asunto')
     const inputMsg = document.querySelector('#mensaje')
+    const form = document.querySelector('#formulario')
 
 
     /* event listeners */
@@ -24,7 +25,15 @@ document.addEventListener('DOMContentLoaded', function() {
     function validarInput(e)
     {
         if (e.target.value.trim() === '') { // trim, borra los espacios de ambos lados
-            console.log('Campo vacío')
+            if (!e.target.parentElement.lastElementChild.classList.contains('alerta')) mostrarAlerta(`Falta completar el campo ${e.target.id}`, e.target.parentElement) // validar si es que hay una alerta
         }
-    } 
+    }
+    
+    function mostrarAlerta(msg, referencia)
+    {
+        const error = document.createElement('P')
+        error.textContent = msg
+        error.className = 'bg-red-600 p-2 text-white text-center font-bold alerta'
+        referencia.appendChild(error) // agrega un nuevo elemento debajo de cada input
+    }
 })
