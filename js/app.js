@@ -4,7 +4,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const inputEmail = document.querySelector('#email')
     const inputAsunto = document.querySelector('#asunto')
     const inputMsg = document.querySelector('#mensaje')
+    const form = document.querySelector('#formulario')
     const btnSubmit = document.querySelector('#formulario button[type="submit"]')
+    const btnReset = document.querySelector('#formulario button[type="reset"]')
     
 
     /* objeto de datos input */
@@ -26,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
         inputEmail.addEventListener('blur', validarInput) 
         inputAsunto.addEventListener('blur', validarInput) 
         inputMsg.addEventListener('blur', validarInput) 
+        btnReset.addEventListener('click', resetForm)
     }
 
 
@@ -84,5 +87,15 @@ document.addEventListener('DOMContentLoaded', function() {
             btnSubmit.classList.remove('opacity-50')
             btnSubmit.disabled = false
         }
+    }
+
+    function resetForm(e)
+    {
+        e.preventDefault()
+        objEmail.email = ''
+        objEmail.asunto = ''
+        objEmail.mensaje = ''
+        form.reset()
+        comprobarObjEmail()
     }
 })
