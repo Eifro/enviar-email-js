@@ -31,12 +31,10 @@ document.addEventListener('DOMContentLoaded', function() {
             return // detiene la ejecución del código
         }
         
-        if (!validarEmail(e.target.value)) {
+        if (e.target.id === 'email' && !validarEmail(e.target.value)) {
             mostrarAlerta('El email no es válido', e.target.parentElement)
             return
         }
-
-        
     }
     
     function mostrarAlerta(msg, referencia)
