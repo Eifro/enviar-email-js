@@ -4,7 +4,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const inputEmail = document.querySelector('#email')
     const inputAsunto = document.querySelector('#asunto')
     const inputMsg = document.querySelector('#mensaje')
-    const form = document.querySelector('#formulario')
+    const btnSubmit = document.querySelector('#formulario button[type="submit"]')
+    
+
+    /* objeto de datos input */
+    const objEmail = {
+        email: '',
+        asunto: '',
+        mensaje: ''
+    }
 
 
     /* event listeners */
@@ -28,13 +36,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (e.target.value.trim() === '') { // trim, borra los espacios de ambos lados
             mostrarAlerta(`Falta completar el campo ${e.target.id}`, e.target.parentElement)
+            objEmail[e.target.id] = e.target.value
+            comprobarObjEmail()
             return // detiene la ejecución del código
         }
         
         if (e.target.id === 'email' && !validarEmail(e.target.value)) {
             mostrarAlerta('El email no es válido', e.target.parentElement)
+            objEmail[e.target.id] = e.target.value
+            comprobarObjEmail()
             return
         }
+
+        objEmail[e.target.id] = e.target.value.trim().toLowerCase() // asignando valores al objeto
+        comprobarObjEmail()
     }
     
     function mostrarAlerta(msg, referencia)
@@ -58,5 +73,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const regex =  /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/ 
         const isEmail = regex.test(email)
         return isEmail
+    }
+
+    function comprobarObjEmail()
+    {
+        if (Object.values(objEmail).includes('') || !validarEmail(objEmail['email'])) { // validar si hay un elemento vacío o si el email es incorrecto
+            btnSubmit.classList.add('opacity-50')
+            btnSubmit.disabled = true
+        } else {
+            btnSubmit.classList.remove('opacity-50')
+            btnSubmit.disabled = false
+        }
     }
 })
