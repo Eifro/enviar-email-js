@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('#formulario')
     const btnSubmit = document.querySelector('#formulario button[type="submit"]')
     const btnReset = document.querySelector('#formulario button[type="reset"]')
+    const spinner = document.querySelector('#spinner')
     
 
     /* objeto de datos input */
@@ -29,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
         inputAsunto.addEventListener('blur', validarInput) 
         inputMsg.addEventListener('blur', validarInput) 
         btnReset.addEventListener('click', resetForm)
+        form.addEventListener('submit', enviarEmail)
     }
 
 
@@ -73,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function validarEmail(email)
     {
-        const regex =  /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/ 
+        const regex =  /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/  // expresión regular para validar email
         const isEmail = regex.test(email)
         return isEmail
     }
@@ -97,5 +99,25 @@ document.addEventListener('DOMContentLoaded', function() {
         objEmail.mensaje = ''
         form.reset()
         comprobarObjEmail()
+    }
+
+    function enviarEmail(e)
+    {
+        e.preventDefault()
+        accionSpinner(e.target.nextElementSibling) // obtener el siguiente elemento hermano
+        setTimeout(() => {
+            accionSpinner(e.target.nextElementSibling)
+        }, 1500)
+    }
+
+    function accionSpinner(referencia)
+    {
+        if (referencia.classList.contains('hidden')) {
+            spinner.classList.add('flex')
+            spinner.classList.remove('hidden')
+        } else {
+            spinner.classList.remove('flex')
+            spinner.classList.add('hidden')
+        }
     }
 })
