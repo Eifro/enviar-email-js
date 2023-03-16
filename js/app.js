@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const inputEmail = document.querySelector('#email')
     const inputAsunto = document.querySelector('#asunto')
     const inputMsg = document.querySelector('#mensaje')
+    const inputCc = document.querySelector('#cc')
     const form = document.querySelector('#formulario')
     const btnSubmit = document.querySelector('#formulario button[type="submit"]')
     const btnReset = document.querySelector('#formulario button[type="reset"]')
@@ -29,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
         inputEmail.addEventListener('blur', validarInput) 
         inputAsunto.addEventListener('blur', validarInput) 
         inputMsg.addEventListener('blur', validarInput) 
+        inputCc.addEventListener('blur', validarInput) 
         btnReset.addEventListener('click', resetForm)
         form.addEventListener('submit', enviarEmail)
     }
@@ -38,6 +40,22 @@ document.addEventListener('DOMContentLoaded', function() {
     function validarInput(e)
     {
         limpiarAlerta(e.target.parentElement) // ejecuta cuando hay texto en el campo
+
+        if (e.target.id === 'cc') {
+            if (e.target.value.length > 0 && !validarEmail(e.target.value)) {
+                mostrarAlerta('El email no es válido', e.target.parentElement)
+                objEmail[e.target.id] = e.target.value
+                comprobarObjEmail()
+                return
+            } else if (e.target.value.length > 0 && validarEmail(e.target.value)) {
+                objEmail[e.target.id] = e.target.value
+                comprobarObjEmail()
+                return
+            }
+            delete objEmail.cc
+            comprobarObjEmail()
+            return
+        }
 
         if (e.target.value.trim() === '') { // trim, borra los espacios de ambos lados
             mostrarAlerta(`Falta completar el campo ${e.target.id}`, e.target.parentElement)
@@ -82,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function comprobarObjEmail()
     {
-        if (Object.values(objEmail).includes('') || !validarEmail(objEmail['email'])) { // validar si hay un elemento vacío o si el email es incorrecto
+        if (Object.values(objEmail).includes('') || !validarEmail(objEmail['email']) || (objEmail.hasOwnProperty('cc') && !validarEmail(objEmail['cc']))) { // validar si hay un elemento vacío o si el email es incorrecto
             btnSubmit.classList.add('opacity-50')
             btnSubmit.disabled = true
         } else {
@@ -93,7 +111,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function resetForm(e)
     {
-        e.preventDefault()
         objEmail.email = ''
         objEmail.asunto = ''
         objEmail.mensaje = ''
@@ -105,8 +122,14 @@ document.addEventListener('DOMContentLoaded', function() {
     {
         e.preventDefault()
         accionSpinner(e.target.nextElementSibling) // obtener el siguiente elemento hermano
+        resetForm()
+        comprobarObjEmail()
         setTimeout(() => {
             accionSpinner(e.target.nextElementSibling)
+            mostrarAlertaExito()
+            setTimeout(() => {
+                form.lastElementChild.remove() // elimina el ultimo elemento hijo del form
+            }, 2000)
         }, 1500)
     }
 
@@ -119,5 +142,13 @@ document.addEventListener('DOMContentLoaded', function() {
             spinner.classList.remove('flex')
             spinner.classList.add('hidden')
         }
+    }
+
+    function mostrarAlertaExito()
+    {
+        const alerta = document.createElement('P')
+        alerta.className = 'bg-green-500 text-white p-2 text-center rounded-lg mt-10 font-bold text-sm uppercase'
+        alerta.textContent = 'SE ENVIO EL EMAIL CORRECTAMENTE'
+        form.appendChild(alerta)
     }
 })
